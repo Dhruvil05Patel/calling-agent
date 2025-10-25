@@ -2,8 +2,5 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
     "tailwindcss": "^4.1.16"
-  },
-  "devDependencies": {
-    "rollup": "^3.29.5"
   }
 }
