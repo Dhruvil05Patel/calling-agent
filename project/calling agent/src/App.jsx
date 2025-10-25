@@ -5,9 +5,14 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // Use the dev proxy endpoint to avoid CORS in development.
-  // Vite will forward /api/* to your n8n host (see vite.config.js).
-  const N8N_WEBHOOK_URL = '/api/webhook/start-call';
+  // Use an environment variable in production. For local development we proxy
+  // requests through Vite at /api/webhook/start-call (see vite.config.js).
+  // On Vercel set VITE_N8N_WEBHOOK_URL to your n8n webhook (e.g.
+  // https://your-n8n-host/webhook/start-call). If unset, the app falls back
+  // to the local dev proxy path which will 404 in production.
+  const defaultDevProxy = '/api/webhook/start-call'
+  const envWebhook = import.meta.env.VITE_N8N_WEBHOOK_URL
+  const N8N_WEBHOOK_URL = envWebhook ? envWebhook : defaultDevProxy
 
   const handleCallClients = async () => {
     setLoading(true);
@@ -85,8 +90,10 @@ export default function App() {
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-500 text-center">
-            For local development the app uses <code>/api/webhook/start-call</code> which is proxied to
-            your n8n host by Vite. If you change <code>vite.config.js</code> restart the dev server.
+            In production set <code>VITE_N8N_WEBHOOK_URL</code> (Vercel env var) to your n8n webhook
+            (for example <code>https://voice1agent.app.n8n.cloud/webhook/start-call</code>). For local
+            development the app uses <code>/api/webhook/start-call</code> which is proxied to your n8n
+            host by Vite. If you change <code>vite.config.js</code> restart the dev server.
           </p>
         </div>
       </div>
